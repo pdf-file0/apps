@@ -12,6 +12,12 @@ runs/*
 # must never be committed
 .browser-profile/
 
+# Real candidate profile/answers and generated application packets contain
+# PII — local only, never committed. Committed counterparts are the
+# *.example.yaml files and test fixtures with dummy data.
+profiles/*.local.yaml
+packets/
+
 # Never commit real candidate documents
 documents/*
 !documents/.gitkeep

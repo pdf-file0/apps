@@ -25,8 +25,9 @@ What it **does**:
 | Phase | Scope |
 | --- | --- |
 | 1 | Offline classification, CV routing, config validation, CLI summary. Fully testable with no network or browser. |
-| **2 (current)** | Browser reconnaissance / dry run: open each job URL, capture evidence, classify from live text, detect the ATS platform, optionally click ONE safe job-page-level Apply CTA, and stop before any login/account/form. |
-| 3+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
+| 2 | Browser reconnaissance / dry run: open each job URL, capture evidence, classify from live text, detect the ATS platform, optionally click ONE safe job-page-level Apply CTA, and stop before any login/account/form. |
+| **3 (current)** | Offline candidate profile, experience bank, answer bank, field automation policy, and per-job application packets for human review. No browser, no forms, no uploads. |
+| 4+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
 
 ## Safety rules
 
@@ -133,6 +134,80 @@ disagrees with the `expectedBucket` in `config/jobs.yaml`; no live text could
 be extracted; only unsafe/ambiguous apply CTAs exist; a captcha, login,
 account-creation, or application form was detected; navigation timed out or
 errored. Those jobs need a human decision before anything else happens.
+
+## Phase 3: candidate profile & application packets (offline)
+
+Phase 3 models everything a future assisted form-fill needs — entirely
+offline, with no browser, no network, no uploads, and no submissions.
+
+### Profile & answer bank privacy
+
+- **Real data lives only in gitignored local files**:
+  `profiles/candidate_profile.local.yaml` and `profiles/answer_bank.local.yaml`
+  (`profiles/*.local.yaml` is in `.gitignore`). Generated `packets/` are also
+  gitignored. This keeps PII, draft answers, and application strategy out of
+  git history entirely.
+- **Committed counterparts use dummy data**: `profiles/*.example.yaml` and
+  `tests/fixtures/*` — copy an example to `*.local.yaml` to get started.
+- The profile schema **hard-locks the risky policies as literals**:
+  `password_creation: manual`, `otp_email_verification: manual`,
+  `captcha: manual`, `account_terms: manual_review`,
+  `final_submit: explicit_approval_only`. Any other value fails validation.
+- Every answer-bank entry is a **draft** (`requires_review: true`,
+  `allow_auto_use_later_phase: false`); a draft can never be marked
+  auto-usable, and behavioural stories additionally carry
+  `unapproved_story_requires_user_confirmation: true`.
+
+### Commands
+
+```bash
+npm run profile:validate -- --profile profiles/candidate_profile.local.yaml
+npm run profile:summary  -- --profile profiles/candidate_profile.local.yaml   # redacted output only
+
+# one job:
+npm run packet -- --job barclays_research_2027_sg --profile profiles/candidate_profile.local.yaml --answers profiles/answer_bank.local.yaml
+# GIC with a chosen track:
+npm run packet -- --job gic_internship_programme --selected-track public_equities --profile profiles/candidate_profile.local.yaml --answers profiles/answer_bank.local.yaml
+# everything:
+npm run packet -- --all --profile profiles/candidate_profile.local.yaml --answers profiles/answer_bank.local.yaml
+```
+
+Console output is **redacted by default** (masked email/phone, no address,
+no DOB); pass `--show-sensitive` to print full values. Full-fidelity JSON and
+Markdown packets are written to `packets/<timestamp>-packet/<jobId>/`
+(`application-packet.json`, `.redacted.json`, `.md`) plus run-level
+`summary.json` / `summary.redacted.json` — all local and gitignored.
+
+### Field automation policy
+
+Every form field/question is classified into one of five categories
+(`src/fieldPolicy/`): `safe_auto_fill` (name, email, education …),
+`auto_if_confirmed` (work authorization, sponsorship, prior applications,
+availability), `demographic_exact_match_only` (gender, race, disability … —
+filled later only when a portal option exactly matches the profile value),
+`manual_review` (salary, essays, cover letters, National Service status,
+declarations), and `never_auto` (password, OTP, captcha, accept-terms,
+certify, final submit, e-signature). Unknown fields default to
+`manual_review` — the system never guesses that a field is safe.
+
+### Readiness flags
+
+- `ready_for_dry_form_fill` — profile has the required factual fields; a
+  future dry run could stage values (still no submission).
+- `ready_for_cv_upload` — false while blocking document items are unresolved
+  (stale Temasek end date, CV email mismatch, private-CV deal-count
+  corrections).
+- `ready_for_final_submit` — **always false in Phase 3**, structurally.
+
+`manualReviewRequired` is true for track-dependent jobs without a selected
+track, manual-review classifications, and non-summer-internship roles
+(e.g. GS New Analyst).
+
+### What Phase 3 does NOT do
+
+No browser automation, no live website calls, no account creation, no form
+filling, no CV uploads, no Apply clicks, no submissions, and no credentials
+of any kind stored anywhere.
 
 ### How Phase 2 prepares for Phase 3
 

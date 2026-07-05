@@ -1,0 +1,140 @@
+# COMMITTED EXAMPLE with dummy data. Copy to candidate_profile.local.yaml
+# (gitignored) and fill in real values. Never commit real PII.
+
+candidate:
+  legal_name: "Alex Tan"
+  preferred_name: "Alex"
+  preferred_application_email: "alex.tan@example.edu"
+  phone: "+65 1234 5678"
+  linkedin: "https://www.linkedin.com/in/example-alex-tan/"
+  residential_address:
+    line_1: "1 Example Street"
+    postal_code: "000000"
+    country: "Singapore"
+  nationality: "Singaporean"
+  citizenship: "Singaporean"
+  date_of_birth:
+    iso: "2000-01-01"
+    display_sg_format: "01/01/2000"
+
+work_authorization:
+  singapore:
+    status: "Singapore citizen"
+    legally_authorized_to_work: true
+    requires_visa_sponsorship_now_or_future: false
+
+education:
+  - institution: "Example University"
+    degree: "Bachelor's in Business Management"
+    major: "Finance"
+    start_date: "2024-08"
+    expected_graduation_date: "2028-05-31"
+    expected_graduation_month_year: "May 2028"
+    gpa: "3.5/4.0"
+    penultimate_year_for_summer_2027: true
+    can_commit_10_week_internship: true
+    can_commit_12_week_internship: true
+
+application_history:
+  barclays:
+    previously_applied: false
+    previously_worked: false
+    relatives_employed: false
+  bank_of_america:
+    previously_applied: false
+    previously_worked: false
+    relatives_employed: false
+  goldman_sachs:
+    previously_applied: false
+    previously_worked: false
+    relatives_employed: false
+  gic:
+    previously_applied: false
+    previously_worked: false
+    relatives_employed: false
+
+portal_accounts:
+  barclays_workday:
+    status: "not_created"
+    email: "alex.tan@example.edu"
+
+demographics:
+  policy: "auto_fill_only_if_exact_option_match"
+  gender:
+    value: "Prefer not to say"
+    allow_auto_fill: true
+  nationality:
+    value: "Singaporean"
+    allow_auto_fill: true
+  veteran_status:
+    value: "No / Not applicable"
+    allow_auto_fill: "true_if_wording_is_clear"
+
+target_role_ranking:
+  public_equities: 1
+  investment_banking: 2
+
+gic_track_ranking:
+  public_equities: 1
+  private_equity: 2
+
+submission_policy:
+  cv_upload: "automatic_later_phase"
+  ats_parse: "automatic_later_phase"
+  parsed_field_correction: "automatic_later_phase"
+  non_sensitive_questions: "automatic_from_answer_bank_later_phase"
+  work_authorization_questions: "automatic_from_confirmed_profile_later_phase"
+  demographic_questions: "automatic_only_if_exact_option_match_later_phase"
+  password_creation: "manual"
+  otp_email_verification: "manual"
+  captcha: "manual"
+  account_terms: "manual_review"
+  final_submit: "explicit_approval_only"
+
+unresolved_items:
+  - id: "cv_email_mismatch"
+    severity: "blocking_before_final_upload"
+    message: "Example blocking item: CV shows an old email address."
+  - id: "national_service_status"
+    severity: "manual_review_if_asked"
+    message: "Example manual-review item: NS status not confirmed."
+
+experiences:
+  - id: "omers_global_equities"
+    employer: "Example Asset Manager"
+    title: "Equities Analyst Intern"
+    start_date: "2026-07"
+    end_date: "2026-12"
+    location: "Singapore"
+    type: "work_experience"
+    cv_bucket_emphasis:
+      - "public_equities_markets_research"
+    short_description: "Public equity research support."
+    bullets:
+      - "Supported equity research and valuation work."
+
+  - id: "temasek_innovation"
+    employer: "Example Investor"
+    title: "Investments Intern"
+    start_date: "2026-01"
+    end_date: "TBD"
+    location: "Singapore"
+    type: "work_experience"
+    cv_bucket_emphasis:
+      - "private_markets_ibd_deals"
+    short_description: "Direct and fund investment support."
+    bullets:
+      - "Supported diligence and investment materials."
+
+  - id: "smu_smif"
+    organization: "Example Student Fund"
+    title: "Analyst"
+    start_date: "2024-08"
+    end_date: "Present"
+    location: "Singapore"
+    type: "leadership_activity"
+    cv_bucket_emphasis:
+      - "public_equities_markets_research"
+    short_description: "Student-run fund activity."
+    bullets:
+      - "Prepared stock pitches."

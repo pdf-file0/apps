@@ -1,0 +1,29 @@
+# COMMITTED EXAMPLE with dummy answers. Copy to answer_bank.local.yaml
+# (gitignored) for real drafts. Every answer stays draft + requires_review
+# until explicitly approved.
+
+answers:
+  - id: tell_us_about_yourself
+    status: draft
+    requires_review: true
+    allow_auto_use_later_phase: false
+    text: "Example draft: I am a finance student with public and private markets internship experience."
+
+  - id: why_investment_banking
+    status: draft
+    requires_review: true
+    allow_auto_use_later_phase: false
+    text: "Example draft: I am interested in investment banking because of transaction exposure."
+
+  - id: why_public_equities_research
+    status: draft
+    requires_review: true
+    allow_auto_use_later_phase: false
+    text: "Example draft: I enjoy public-market research and valuation."
+
+  - id: failure
+    status: draft
+    requires_review: true
+    allow_auto_use_later_phase: false
+    unapproved_story_requires_user_confirmation: true
+    text: "Example draft: a failure story that must be confirmed by the user before any use."

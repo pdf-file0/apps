@@ -1,0 +1,27 @@
+# Test fixture — dummy answers only. Ids mirror the real answer bank.
+answers:
+  - { id: tell_us_about_yourself, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: about myself." }
+  - { id: why_public_equities_research, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why public equities." }
+  - { id: why_equity_research, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why equity research." }
+  - { id: why_investment_banking, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why investment banking." }
+  - { id: why_private_equity_direct_investing, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why private equity." }
+  - { id: why_sales_trading_markets, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why markets." }
+  - { id: why_ficc_macro, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why FICC macro." }
+  - { id: why_quantitative_strats, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why quant strats." }
+  - { id: why_barclays_research, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why Barclays research." }
+  - { id: why_barclays_investment_banking, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why Barclays IB." }
+  - { id: why_bank_of_america_global_investment_banking, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why BofA GIB." }
+  - { id: why_goldman_sachs, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why Goldman Sachs." }
+  - { id: why_gic, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why GIC." }
+  - { id: why_singapore, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: why Singapore." }
+  - { id: investment_idea_singtel, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: investment idea." }
+  - { id: market_trend_ai_infrastructure_cybersecurity, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: market trend." }
+  - { id: worked_under_pressure, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: pressure." }
+  - { id: leadership, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: leadership." }
+  - { id: complex_analytical_problem_public_equities, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: complex problem." }
+  - { id: failure, status: draft, requires_review: true, allow_auto_use_later_phase: false, unapproved_story_requires_user_confirmation: true, text: "Fixture answer: failure story." }
+  - { id: conflict, status: draft, requires_review: true, allow_auto_use_later_phase: false, unapproved_story_requires_user_confirmation: true, text: "Fixture answer: conflict story." }
+  - { id: long_term_career_goals, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: long-term goals." }
+  - { id: differentiator, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: differentiator." }
+  - { id: skills_to_develop, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: skills to develop." }
+  - { id: preferred_group_sector, status: draft, requires_review: true, allow_auto_use_later_phase: false, text: "Fixture answer: preferred group." }

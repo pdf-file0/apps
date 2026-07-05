@@ -12,7 +12,10 @@
     "typecheck": "tsc --noEmit",
     "classify": "tsx src/index.ts",
     "recon": "tsx src/recon.ts",
-    "recon:fixture": "tsx src/recon.ts --provider fixture"
+    "recon:fixture": "tsx src/recon.ts --provider fixture",
+    "profile:validate": "tsx src/profile-cli.ts validate",
+    "profile:summary": "tsx src/profile-cli.ts summary",
+    "packet": "tsx src/packet-cli.ts"
   },
   "dependencies": {
     "playwright-core": "^1.49.1",
