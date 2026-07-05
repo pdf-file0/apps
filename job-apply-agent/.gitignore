@@ -8,6 +8,10 @@ coverage/
 runs/*
 !runs/.gitkeep
 
+# Local browser profile for live recon — may contain cookies/session data,
+# must never be committed
+.browser-profile/
+
 # Never commit real candidate documents
 documents/*
 !documents/.gitkeep

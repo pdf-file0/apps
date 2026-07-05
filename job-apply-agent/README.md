@@ -24,12 +24,9 @@ What it **does**:
 
 | Phase | Scope |
 | --- | --- |
-| **1 (current)** | Offline classification, CV routing, config validation, CLI summary. Fully testable with no network or browser. |
-| 2 | Job-content fetching (Firecrawl provider) and Playwright-based form *scaffolding* — still no account creation and no final submit without explicit human confirmation. |
+| 1 | Offline classification, CV routing, config validation, CLI summary. Fully testable with no network or browser. |
+| **2 (current)** | Browser reconnaissance / dry run: open each job URL, capture evidence, classify from live text, detect the ATS platform, optionally click ONE safe job-page-level Apply CTA, and stop before any login/account/form. |
 | 3+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
-
-The Phase-2 provider seam already exists: `JobContentProvider` in
-`src/intelligence/types.ts`. Phase 1 ships no network implementation of it.
 
 ## Safety rules
 
@@ -50,12 +47,101 @@ The Phase-2 provider seam already exists: `JobContentProvider` in
 
 ```bash
 npm install                                  # one-time setup
-npm test                                     # vitest unit + config-validation tests
+npm test                                     # vitest unit + config-validation tests (all offline)
 npm run typecheck                            # tsc --noEmit
 npm run classify -- --jobs config/jobs.yaml  # classify + write runs/latest-classification-summary.json
+npm run recon -- --jobs config/jobs.yaml     # Phase 2 live reconnaissance (see below)
+npm run recon:fixture -- --jobs config/jobs.yaml  # offline recon over local test pages
 ```
 
 Run everything from the repo root (`job-apply-agent/`).
+
+## Phase 2: browser reconnaissance (dry run)
+
+Reconnaissance opens each job URL in your locally installed Chrome (via
+`playwright-core`, channel `chrome`; falls back to Edge — **no browser
+downloads**), then for each job:
+
+1. captures a screenshot of the job page (`01-job-page.png`),
+2. extracts the visible page text and re-runs the Phase 1 classifier on it,
+3. selects the CV via the same routing as `npm run classify`,
+4. detects the application platform (Workday / TAL.net / Oracle Recruiting /
+   Impress.ai / Greenhouse / Lever / LinkedIn / unknown) with evidence,
+5. scans and logs every clickable CTA on the page,
+6. **optionally** — only with `--click-apply` — clicks at most ONE
+   job-page-level Apply CTA whose label exactly matches the safe list
+   (`Apply`, `Apply now`, `Start application`, `Apply for this job`,
+   `Apply to this job`), then screenshots, re-detects the platform, and
+   **stops immediately**.
+
+### What Phase 2 does NOT do
+
+There is no code path that fills a field, uploads a document, creates an
+account, enters a password, handles an OTP, solves a captcha, accepts terms,
+or clicks anything submit-like (`Submit`, `Continue`, `Next`, `Save and
+continue`, `Create account`, `Sign in`, `Register`, `Accept`, `I agree`,
+`Certify` are all on a hard blocklist). If the page is detected as a login,
+account-creation, captcha, or application-form page — before *or* after the
+Apply click — reconnaissance records the state and stops. When unsure, it
+does not click and records `manual_review_required`.
+
+Cookie banners: handling is **decline-only**. If a consent dialog blocks the
+page, recon clicks an exact-match decline label (`Reject All`, `Decline`,
+`Necessary cookies only`, …) and logs it. It never clicks `Accept All`,
+`I agree`, or `Manage Cookies`, and never accepts any terms.
+
+### Running reconnaissance
+
+```bash
+# all jobs, live browser, no clicking (default):
+npm run recon -- --jobs config/jobs.yaml --headed
+
+# one job:
+npm run recon -- --jobs config/jobs.yaml --headed --job barclays_research_2027_sg
+
+# first N jobs:
+npm run recon -- --jobs config/jobs.yaml --headed --limit 1
+
+# explicitly allow the single safe Apply-CTA click:
+npm run recon -- --jobs config/jobs.yaml --headed --job barclays_research_2027_sg --click-apply
+
+# fully offline (parses test-pages/*.html, no browser, no network):
+npm run recon -- --jobs config/jobs.yaml --provider fixture
+```
+
+`--click-apply` is **off by default**; `--no-click-apply` forces it off.
+Headed mode is the default so you can watch; `--headless` hides the window.
+Live recon uses an isolated profile in `.browser-profile/` (gitignored).
+
+### Where output goes
+
+Each run creates `runs/<timestamp>-recon/` containing `summary.json`,
+`action-log.jsonl`, and one folder per job with screenshots
+(`01-job-page.png`, `02-after-apply-click.png`), `extracted-job-page.txt`,
+`job-page-metadata.json`, `live-classification.json`,
+`platform-detection.json`, `cta-candidates.json`, and a per-job
+`action-log.jsonl`. The latest summary is also copied to
+`runs/latest-recon-summary.json`. Console output never contains candidate
+PII; local JSON contains job URLs/titles/platform/classification only —
+never CV contents, passwords, cookies, or credentials.
+
+### Interpreting manualReviewRequired
+
+A job is flagged `manualReviewRequired: true` when any of these hold: live
+classification is `manual_review` or `track_dependent`; live classification
+disagrees with the `expectedBucket` in `config/jobs.yaml`; no live text could
+be extracted; only unsafe/ambiguous apply CTAs exist; a captcha, login,
+account-creation, or application form was detected; navigation timed out or
+errored. Those jobs need a human decision before anything else happens.
+
+### How Phase 2 prepares for Phase 3
+
+Phase 2 produces exactly the evidence Phase 3 (assisted form filling with
+per-submission human confirmation) will need: the confirmed ATS platform per
+job, the post-Apply entry URL, CTA inventories, live-text classification and
+CV choice, and screenshots to review. Phase 3 will build on the same
+provider/target interfaces — with every submission gated on explicit human
+confirmation, and auto-submit permanently off.
 
 ## How classification works
 
