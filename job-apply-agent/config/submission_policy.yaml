@@ -1,0 +1,14 @@
+# Phase 1 submission policy. Every risky action is hard-locked to false and
+# validated as a literal in src/config/schemas.ts — flipping a flag here makes
+# config validation FAIL rather than enabling the behavior. Phase 2 will
+# introduce a new schema with explicit human-confirmation gates.
+phase: 1
+autoSubmit: false
+allowAccountCreation: false
+allowDocumentUpload: false
+allowFinalSubmit: false
+requireHumanConfirmation: true
+notes: >-
+  Phase 1 is classification-only. The agent never submits applications, never
+  creates accounts, never uploads CVs, never clicks final submit, and never
+  stores passwords, OTPs, cookies, or credentials in this repository.

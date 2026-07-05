@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+.env
+*.log
+
+# Run outputs are generated artifacts
+runs/*
+!runs/.gitkeep
+
+# Never commit real candidate documents
+documents/*
+!documents/.gitkeep

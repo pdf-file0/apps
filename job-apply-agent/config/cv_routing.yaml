@@ -1,0 +1,23 @@
+# CV routing: which CV each classification bucket maps to.
+# Paths are placeholders — Phase 1 never reads, modifies, or uploads the PDFs.
+cvs:
+  omers_public_equities:
+    humanLabel: OMERS / public equities CV
+    path: documents/Samuel_Lim_CV_Public_Equities_Markets.pdf
+  temasek_private_markets:
+    humanLabel: Temasek-expanded / private markets CV
+    path: documents/Samuel_Lim_CV_Private_Markets_IBD.pdf
+
+buckets:
+  public_equities_markets_research:
+    cv: omers_public_equities
+  private_markets_ibd_deals:
+    cv: temasek_private_markets
+  track_dependent:
+    cv: null
+    humanLabel: manual until selected track is known
+    requiresManualReview: true
+  manual_review:
+    cv: null
+    humanLabel: manual review required
+    requiresManualReview: true

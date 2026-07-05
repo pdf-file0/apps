@@ -1,0 +1,81 @@
+# Known jobs for Phase 1 classification. Each job points at a local fixture
+# text file (offline — no network access in Phase 1).
+#
+# expectedBucket is a TIE-BREAK only: it is consulted when keyword scores are
+# ambiguous, never to bypass keyword scoring.
+jobs:
+  - id: barclays_research_2027_sg
+    url: https://search.jobs.barclays/job/singapore/research-analyst-summer-internship-programme-2027-singapore/13015/97173678304
+    company: Barclays
+    platformHint: Workday
+    fixture: tests/fixtures/barclays_research.txt
+    expectedBucket: public_equities_markets_research
+    notes: Research across rates, FX, commodities; investment theses, financial models, research writing, sales/trading interaction.
+
+  - id: barclays_ib_2027_sg
+    url: https://search.jobs.barclays/job/singapore/investment-banking-summer-internship-programme-2027-singapore/13015/97173677392
+    company: Barclays
+    platformHint: Workday
+    fixture: tests/fixtures/barclays_ib.txt
+    expectedBucket: private_markets_ibd_deals
+    notes: Investment banking, M&A, equity/debt origination, loans, capital raising, live deals, valuation, due diligence, offering memoranda.
+
+  - id: bofa_gib_2027_sg
+    url: https://careers.bankofamerica.com/en-us/students/job-detail/14364/global-investment-banking-summer-analyst-2027-singapore-singapore-singapore
+    company: Bank of America
+    platformHint: TAL.net / campus careers
+    fixture: tests/fixtures/bofa_gib.txt
+    expectedBucket: private_markets_ibd_deals
+    notes: Global Investment Banking Summer Analyst; financial models, valuations, merger consequences, due diligence, client materials.
+
+  - id: gs_170782
+    url: https://higher.gs.com/roles/170782
+    company: Goldman Sachs
+    platformHint: Oracle Recruiting
+    fixture: tests/fixtures/gs_investment_banking_new_analyst.txt
+    expectedBucket: private_markets_ibd_deals
+    notes: Investment Banking New Analyst; strategic advice, M&A, financing, risk management transactions. NOT a summer internship.
+
+  - id: gs_171417
+    url: https://higher.gs.com/roles/171417
+    company: Goldman Sachs
+    platformHint: Oracle Recruiting
+    fixture: tests/fixtures/gs_alternatives_private_investing_new_analyst.txt
+    expectedBucket: private_markets_ibd_deals
+    notes: Asset Management, Alternatives / Private Investing New Analyst. NOT a summer internship.
+
+  - id: gs_170822
+    url: https://higher.gs.com/roles/170822
+    company: Goldman Sachs
+    platformHint: Oracle Recruiting
+    fixture: tests/fixtures/gs_global_investment_research.txt
+    expectedBucket: public_equities_markets_research
+    notes: Global Investment Research Summer Analyst; equity, fixed income, currency and commodities research.
+
+  - id: gs_170600
+    url: https://higher.gs.com/roles/170600
+    company: Goldman Sachs
+    platformHint: Oracle Recruiting
+    fixture: tests/fixtures/gs_ficc_equities_quant_strats.txt
+    expectedBucket: public_equities_markets_research
+    notes: FICC and Equities Sales and Trading Quantitative Strats Summer Analyst; market-making, quantitative modelling.
+
+  - id: gic_internship_programme
+    url: https://gic.careers/programmes/gic-internship-programme/
+    company: GIC
+    platformHint: Impress.ai
+    fixture: tests/fixtures/gic_internship_programme.txt
+    expectedBucket: track_dependent
+    trackRouting:
+      public equities: public_equities_markets_research
+      fixed income: public_equities_markets_research
+      private equity: private_markets_ibd_deals
+      infrastructure: private_markets_ibd_deals
+      real estate: private_markets_ibd_deals
+      technology / AI investing: private_markets_ibd_deals
+    notes: >-
+      One application covers Investment Professionals tracks across public and
+      private markets plus Technology and Corporate Services. CV stays manual
+      until the track is selected. Technology / AI investing routes to the
+      private markets CV unless it is clearly a pure software/data/cybersecurity
+      technology track.

@@ -1,0 +1,51 @@
+# Candidate profile SCHEMA + document warnings.
+#
+# This file intentionally holds no CV content and no credentials. It defines
+# which fields a candidate profile will have (Phase 2) and records known
+# issues with the candidate's documents that a human must fix before any
+# upload ever happens. Phase 1 never modifies the PDFs.
+applicationEmail: samuel.lim.2024@smu.edu.sg
+
+piiPolicy: >-
+  PII values (email, phone, address) are never printed to the console log.
+  Warning codes are printed; full warning text lives only in the local JSON
+  run summary. Passwords, OTPs, cookies, and credentials are never stored in
+  this repository in any phase.
+
+profileFields:
+  fullName:
+    type: string
+    required: true
+    pii: true
+  applicationEmail:
+    type: string
+    required: true
+    pii: true
+  phone:
+    type: string
+    required: false
+    pii: true
+  university:
+    type: string
+    required: true
+  graduationYear:
+    type: number
+    required: true
+
+documentWarnings:
+  - code: cv_email_mismatch
+    message: >-
+      Application email should be samuel.lim.2024@smu.edu.sg, but the existing
+      CV PDFs may still show samuel.lim.2024@business.smu.edu.sg. Update BOTH
+      CVs before any final upload.
+  - code: temasek_end_date_stale
+    message: >-
+      The Temasek role has ended, but the CVs may still say "Jan 2026 -
+      Present". Update the exact end date on both CVs before any final upload.
+  - code: temasek_deal_counts_incorrect
+    message: >-
+      The private-markets CV may need correction. Temasek experience should
+      read: 6 live investment deals, 4 direct investments, 3 fund investments,
+      and US$500m investment into a US$5b Series H round for the autonomous
+      defence company. Do not modify PDFs in Phase 1 — this is a reminder for
+      manual correction.
