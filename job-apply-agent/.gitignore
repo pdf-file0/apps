@@ -17,6 +17,7 @@ runs/*
 # *.example.yaml files and test fixtures with dummy data.
 profiles/*.local.yaml
 packets/
+flows/
 
 # Never commit real candidate documents
 documents/*

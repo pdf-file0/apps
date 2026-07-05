@@ -1,4 +1,6 @@
 import type { PageView } from '../browser/types'
+import type { PageSnapshot, PageStateKind, PageStateResult } from '../flow/types'
+import { normalizeLabel, SAFE_APPLY_LABELS } from './findApplyCta'
 
 export interface PageState {
   captcha: boolean
@@ -58,4 +60,59 @@ export function detectPageState(view: PageView): PageState {
   }
 
   return { captcha, loginOrAccount, applicationForm, evidence }
+}
+
+/**
+ * Phase 4 extension: classify the page into one of the extended states used
+ * by flow mapping. Checks run in danger order — a page that is a captcha or
+ * final-submit screen must never be reported as something more benign.
+ */
+export function detectExtendedPageState(snapshot: PageSnapshot): PageStateResult {
+  const text = snapshot.text.toLowerCase()
+  const labels = snapshot.ctas.filter((c) => c.visible).map((c) => normalizeLabel(c.text))
+  const has = (...wanted: string[]): boolean => labels.some((l) => wanted.includes(l))
+  const basic = detectPageState(snapshot)
+  const found = (state: PageStateKind, evidence: string[]): PageStateResult => ({ state, evidence })
+
+  if (basic.captcha) return found('captcha', ['captcha challenge detected'])
+  if (
+    (has('submit', 'submit application', 'complete application') || has('certify')) &&
+    /review your application|certify|declaration|information is true/.test(text)
+  ) {
+    return found('final_submit', ['submit control plus review/certification language'])
+  }
+  if (/terms and conditions|terms of use/.test(text) && has('accept', 'i agree', 'accept all')) {
+    return found('terms', ['terms text with an accept control'])
+  }
+  if (basic.loginOrAccount) {
+    if (/create account|create an account|register|sign up/.test(text) || has('create account', 'register', 'sign up')) {
+      return found('account_creation', [...basic.evidence, 'account-creation wording present'])
+    }
+    return found('login', basic.evidence)
+  }
+  if (/chatbot|virtual assistant|impress\.ai/.test(text)) {
+    return found('chatbot', ['chatbot/virtual-assistant wording'])
+  }
+  if (
+    has('autofill with resume', 'apply manually', 'use my last application') ||
+    /start your application/.test(text)
+  ) {
+    return found('application_entry_chooser', ['application entry options visible'])
+  }
+  if (snapshot.signals.fileInputCount > 0 || /upload (your )?(resume|resumé|cv)/.test(text)) {
+    return found('resume_upload', ['file input or resume-upload wording'])
+  }
+  if (/\bmy information\b/.test(text) && snapshot.signals.formFieldCount >= 3) {
+    return found('profile_form', ['ATS "My Information" form section'])
+  }
+  const hasSafeApply = snapshot.ctas.some(
+    (c) => c.visible && c.enabled && SAFE_APPLY_LABELS.includes(normalizeLabel(c.text)),
+  )
+  if (snapshot.phase === 'pre_click' && hasSafeApply) {
+    return found('job_landing_page', ['original job page with a safe apply CTA'])
+  }
+  if (snapshot.phase === 'post_click') {
+    return found('external_apply_entry', ['post-apply page with no stronger signal'])
+  }
+  return found('unknown', [])
 }

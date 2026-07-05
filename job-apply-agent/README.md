@@ -26,8 +26,39 @@ What it **does**:
 | --- | --- |
 | 1 | Offline classification, CV routing, config validation, CLI summary. Fully testable with no network or browser. |
 | 2 | Browser reconnaissance / dry run: open each job URL, capture evidence, classify from live text, detect the ATS platform, optionally click ONE safe job-page-level Apply CTA, and stop before any login/account/form. |
-| **3 (current)** | Offline candidate profile, experience bank, answer bank, field automation policy, and per-job application packets for human review. No browser, no forms, no uploads. |
-| 4+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
+| 3 | Offline candidate profile, experience bank, answer bank, field automation policy, and per-job application packets for human review. No browser, no forms, no uploads. |
+| **4 (current)** | Platform adapter scaffolding + read-only application-flow mapping: per job, detect the platform, map the first application states/options after at most one safe Apply click, and record manual checkpoints. Adapters are strictly non-mutating. |
+| 5+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
+
+## Phase 4: flow mapping & platform adapters (read-only)
+
+`npm run flow:map` extends Phase 2 recon: for each job it captures the page,
+classifies it, detects the platform, enumerates every visible **entry
+option** (`Autofill with Resume`, `Apply Manually`, `Create Account`,
+`Sign In`, chatbot `Start`, …) with a safety verdict
+(`safe_read_only` / `safe_apply_click_only` / `blocked_phase_4` /
+`never_auto`), maps the extended **page state** (login, account_creation,
+application_entry_chooser, resume_upload, profile_form, chatbot, captcha,
+terms, final_submit, …), and lists the **manual checkpoints** a human must
+clear before any later phase may continue. Platform adapters
+(Workday / TAL.net / Oracle Recruiting / Impress.ai / Unknown-fallback) are
+pure observers — the adapter contract has no fill/type/upload/select/submit
+surface at all, enforced by a static safety test.
+
+```bash
+npm run flow:map -- --jobs config/jobs.yaml --provider fixture              # offline, all jobs
+npm run flow:map -- --jobs config/jobs.yaml --headed --no-click-apply       # live, observe only
+npm run flow:map -- --jobs config/jobs.yaml --headed --job <id> --click-apply  # one safe click, then map & stop
+```
+
+Live runs must be headed (pass `--allow-headless-live` or set `CI=true` to
+override). Output goes to `flows/<timestamp>Z-flow/` (gitignored):
+per-job `flow-map.json` / `.redacted.json` / `.md`, screenshots,
+`page-snapshot.json`, `entry-options.json`, `manual-checkpoints.json`,
+`adapter-summary.json`, action logs, plus run-level summaries copied to
+`flows/latest-flow-summary(.redacted).json`. Each flow map embeds Phase 3
+packet readiness — `ready_for_cv_upload` stays false until the document
+warnings are fixed, and `ready_for_final_submit` is always false.
 
 ## Safety rules
 
