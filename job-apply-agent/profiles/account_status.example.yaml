@@ -1,0 +1,19 @@
+# COMMITTED EXAMPLE with dummy data. Copy to profiles/account_status.local.yaml
+# (gitignored) and fill in real values.
+#
+# This file tracks WHETHER portal accounts exist — never how to get into them.
+# NEVER store passwords, OTPs, cookies, session tokens, or security answers
+# here: the schema rejects credential-looking content and any extra keys.
+#
+# status values: not_created | created_pending_verification | created |
+#                login_verified | unknown
+
+accounts:
+  barclays_workday:
+    company: Barclays
+    portal: workday
+    email: "alex.tan@example.edu"
+    entry_url: "https://example.wd3.myworkdayjobs.com/example_careers"
+    status: not_created
+    notes: "Create manually via accounts:setup — the agent only opens the page and waits."
+    history: []

@@ -19,6 +19,10 @@ profiles/*.local.yaml
 packets/
 flows/
 
+# Local document manifest declares real CV contents (emails, deal figures) —
+# local only, never committed. Committed counterpart is the *.example.yaml.
+config/*.local.yaml
+
 # Never commit real candidate documents
 documents/*
 !documents/.gitkeep

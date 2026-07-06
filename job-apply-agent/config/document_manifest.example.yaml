@@ -1,0 +1,61 @@
+# COMMITTED EXAMPLE with dummy data. Copy to config/document_manifest.local.yaml
+# (gitignored) and declare what your REAL documents currently show.
+#
+# The manifest is a HUMAN-maintained declaration of what each document (CV
+# PDF, transcript, ...) actually displays. Phase 5 never opens or parses the
+# PDFs — you declare their contents here, and the readiness gate compares the
+# declarations against the source of truth (profile + expected values).
+# CV upload stays blocked until every blocker the gate reports is resolved.
+#
+# NOTE: this example intentionally declares stale contents (old email,
+# "Present" end date, missing corrections) so `npm run documents:readiness --
+# --manifest config/document_manifest.example.yaml` demonstrates the blockers.
+
+expected_application_email: "alex.tan@example.edu"
+
+# unknown -> the readiness gate emits a pause-if-asked item: the moment ANY
+# portal asks about National Service, a human takes over.
+national_service_status: "unknown"
+
+# Every CV key that must be declared (and unblocked) before any upload phase.
+# Keys match config/cv_routing.yaml.
+required_cv_keys:
+  - omers_public_equities
+  - temasek_private_markets
+
+# Source-of-truth figures the private-markets CV must show once corrected.
+# DUMMY values here — real figures belong only in the gitignored local file.
+expected_private_markets_stats:
+  live_investment_deals: 2
+  direct_investments: 1
+  fund_investments: 1
+  series_h_investment_usd_millions: 100
+  series_h_round_size_usd_billions: 1
+  series_h_company_descriptor: "example technology company"
+
+documents:
+  - key: omers_public_equities
+    kind: cv
+    human_label: "Public equities / markets CV"
+    path: documents/Example_CV_Public_Equities.pdf
+    cv_bucket: public_equities_markets_research
+    # Stale on purpose: demonstrates the cv_email_mismatch blocker.
+    email_shown: "alex.tan@old.example.edu"
+    experiences_shown:
+      # Normalized form: "YYYY-MM", "Present", or "TBD".
+      # "Present" is stale on purpose: demonstrates temasek_end_date_stale.
+      - experience_id: temasek_innovation
+        end_date_shown: "Present"
+
+  - key: temasek_private_markets
+    kind: cv
+    human_label: "Private markets / IBD CV"
+    path: documents/Example_CV_Private_Markets.pdf
+    cv_bucket: private_markets_ibd_deals
+    email_shown: "alex.tan@old.example.edu"
+    experiences_shown:
+      - experience_id: temasek_innovation
+        end_date_shown: "Present"
+    # null = corrections not applied to the CV yet (blocker). Once the CV is
+    # fixed, declare the figures it now shows and the gate re-checks them.
+    private_markets_stats_shown: null

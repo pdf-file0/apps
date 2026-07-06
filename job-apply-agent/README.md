@@ -27,8 +27,68 @@ What it **does**:
 | 1 | Offline classification, CV routing, config validation, CLI summary. Fully testable with no network or browser. |
 | 2 | Browser reconnaissance / dry run: open each job URL, capture evidence, classify from live text, detect the ATS platform, optionally click ONE safe job-page-level Apply CTA, and stop before any login/account/form. |
 | 3 | Offline candidate profile, experience bank, answer bank, field automation policy, and per-job application packets for human review. No browser, no forms, no uploads. |
-| **4 (current)** | Platform adapter scaffolding + read-only application-flow mapping: per job, detect the platform, map the first application states/options after at most one safe Apply click, and record manual checkpoints. Adapters are strictly non-mutating. |
-| 5+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
+| 4 | Platform adapter scaffolding + read-only application-flow mapping: per job, detect the platform, map the first application states/options after at most one safe Apply click, and record manual checkpoints. Adapters are strictly non-mutating. |
+| **5 (current)** | Document readiness gate + human-in-the-loop account setup: a declared document manifest blocks CV upload until every document issue is fixed, local account status tracking, and a setup command that opens the portal checkpoint and pauses while the human does everything. |
+| 6+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
+
+## Phase 5: document readiness gate & human-in-the-loop account setup
+
+Phase 5 adds two things: a **document readiness gate** that keeps CV upload
+structurally impossible until every document issue is fixed, and an
+**account setup flow** where the agent's only job is to open the right portal
+page and get out of the way.
+
+### Document manifest & readiness gate
+
+`config/document_manifest.local.yaml` (gitignored; committed counterpart is
+`document_manifest.example.yaml`) is a human-maintained declaration of what
+each CV PDF *currently shows* — the email printed on it, experience end dates
+in normalized form (`YYYY-MM` / `Present` / `TBD`), and the private-markets
+deal figures. The agent never opens or parses the PDFs; it compares your
+declarations against the source of truth (local profile + expected values):
+
+```bash
+npm run documents:validate    # schema check + document list
+npm run documents:readiness   # the gate: exits 1 while any blocker remains
+```
+
+Blockers (each blocks `ready_for_cv_upload`): CV email mismatch (old
+`business.*` address vs the application email), stale Temasek end date
+(`… – Present` after the role ended), unresolved Temasek end month in the
+profile, private-markets CV corrections not yet applied (deal counts +
+Series H figures declared in the local manifest), missing document files,
+routed CVs absent from the manifest, and the profile's own CV-blocking
+unresolved items (same ids Phase 3 uses, so the gates can never disagree).
+National Service status stays a **pause-if-asked** manual item — it never
+silently unblocks. `ready_for_final_submit` is the literal `false`.
+Later phases must call `assertCvUploadAllowed()` (src/documents/
+documentReadiness.ts), which throws while blockers remain.
+
+### Account status & setup (human does everything)
+
+`profiles/account_status.local.yaml` (gitignored) tracks **whether** portal
+accounts exist — never how to get into them. The schema is strict: extra keys
+like `password:` fail validation, and free-text notes that look like
+credentials (`password:`/`otp=`/`token:`/…) are rejected at parse, record,
+and save time.
+
+```bash
+npm run accounts:list                                  # current statuses (emails masked)
+npm run accounts:plan  -- --job <id>                   # print the human-first setup plan
+npm run accounts:setup -- --job <id> [--capture]       # open checkpoint, pause for the human
+npm run accounts:record -- --account <key> --status <status>   # manual status update
+```
+
+`accounts:setup` launches a **headed** browser (headless throws), navigates to
+the portal checkpoint (job URL, or the account's `entry_url`, or `--url`),
+prints the plan, and **pauses**. You create the account, type the password,
+handle OTP, read the terms, and solve any captcha yourself in that window.
+With `--capture`, after you press Enter the agent re-scans the page
+read-only, records only signed-in **evidence labels** (never page text,
+cookies, or tokens) to `runs/` (gitignored), and updates the local account
+status. Session state you create lives only in the gitignored
+`.browser-profile/`. The account modules contain no click/fill/type/upload
+calls at all — enforced by a static safety test, like the Phase 4 adapters.
 
 ## Phase 4: flow mapping & platform adapters (read-only)
 

@@ -16,7 +16,13 @@
     "profile:validate": "tsx src/profile-cli.ts validate",
     "profile:summary": "tsx src/profile-cli.ts summary",
     "packet": "tsx src/packet-cli.ts",
-    "flow:map": "tsx src/flow-cli.ts"
+    "flow:map": "tsx src/flow-cli.ts",
+    "documents:validate": "tsx src/document-cli.ts validate",
+    "documents:readiness": "tsx src/document-cli.ts readiness",
+    "accounts:list": "tsx src/account-cli.ts list",
+    "accounts:plan": "tsx src/account-cli.ts plan",
+    "accounts:setup": "tsx src/account-cli.ts setup",
+    "accounts:record": "tsx src/account-cli.ts record"
   },
   "dependencies": {
     "playwright-core": "^1.49.1",
