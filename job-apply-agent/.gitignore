@@ -23,6 +23,11 @@ flows/
 # local only, never committed. Committed counterpart is the *.example.yaml.
 config/*.local.yaml
 
+# Phase 6 draft runs contain scanned field values, screenshots, and action
+# logs — local only, never committed. Same for any account-run artifacts.
+draft-runs/
+account-runs/
+
 # Never commit real candidate documents
 documents/*
 !documents/.gitkeep

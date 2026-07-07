@@ -28,8 +28,93 @@ What it **does**:
 | 2 | Browser reconnaissance / dry run: open each job URL, capture evidence, classify from live text, detect the ATS platform, optionally click ONE safe job-page-level Apply CTA, and stop before any login/account/form. |
 | 3 | Offline candidate profile, experience bank, answer bank, field automation policy, and per-job application packets for human review. No browser, no forms, no uploads. |
 | 4 | Platform adapter scaffolding + read-only application-flow mapping: per job, detect the platform, map the first application states/options after at most one safe Apply click, and record manual checkpoints. Adapters are strictly non-mutating. |
-| **5 (current)** | Document readiness gate + human-in-the-loop account setup: a declared document manifest blocks CV upload until every document issue is fixed, local account status tracking, and a setup command that opens the portal checkpoint and pauses while the human does everything. |
-| 6+ | Assisted form filling with a human confirming every submission. Auto-submit stays off by design. |
+| 5 | Document readiness gate + human-in-the-loop account setup: a declared document manifest blocks CV upload until every document issue is fixed, local account status tracking, and a setup command that opens the portal checkpoint and pauses while the human does everything. |
+| **6 (current)** | Workday-only controlled application drafting for Barclays: preflight gates, page guards, field scanning/mapping, and flag-gated filling of safe/confirmed fields. Inspection-only by default; final submission structurally impossible. |
+| 7+ | Broader assisted drafting with a human confirming every submission. Auto-submit stays off by design. |
+
+## Phase 6: Workday-only controlled application drafting (Barclays)
+
+Phase 6 adds the first form-filling capability — deliberately narrow:
+**Barclays Workday only**, behind explicit preflight and CLI gates. BofA
+(TAL.net), Goldman (Oracle), and GIC (impress.ai) remain read-only.
+
+### Preflight (runs before any browser opens)
+
+`src/draft/preflight.ts` verifies: the job is Barclays Workday; the bucket
+routes to a CV and the route matches; the Phase 3 packet builds; profile,
+answer bank, account status, and document manifest all validate; live runs
+are headed. It grants capabilities fail-closed:
+
+- `canInspect` — allowed even with document blockers and an unverified
+  account (the run then stops at login/account checkpoints).
+- `canFillSafeFields` — requires the explicit `--fill-safe-fields` flag AND
+  Barclays account status `login_verified_manually` (a human logged in and
+  recorded it via `accounts:record`). No verified session, no fill — filling
+  a form that cannot be attributed to a human-controlled session is never OK.
+- `canFillConfirmedFields` — additionally requires `--fill-confirmed-fields`.
+- `canUploadCv` — additionally requires `--allow-cv-upload`, a CLEAN
+  document readiness gate (`npm run documents:readiness` exits 0), and the
+  routed CV file on disk. Stale CVs (wrong email, old end date, uncorrected
+  deal figures) can therefore never be uploaded.
+- `canSubmitFinal` — the literal `false`; the type admits nothing else.
+
+### Page guards & the drafting loop
+
+Every scanned page passes `WorkdayPageGuards` before and during any fill:
+final-review/submit markers, certification or e-signature wording, terms
+pages, password/OTP fields, captchas, already-submitted/duplicate/expired
+notices, login pages, and unknown forms all block mutation outright. Fields
+are scanned read-only (no cookies/storage, never password values), mapped
+through the Phase 3 field policy (unknown labels default to manual review),
+and turned into an explicit action plan. Dropdowns/radios fill only on an
+EXACT option match; essays are never auto-filled (answer-bank entries are
+review-gated drafts); demographics need `--fill-demographics` plus an exact
+match plus profile opt-in. The run stops at the first failure or guard trip
+and never clicks Next/Continue or navigates between sections.
+
+```bash
+# inspection only (default — also what plain `npm run draft:workday -- --job <id>` does):
+npm run draft:workday -- --job barclays_research_2027_sg --headed --inspect-only
+
+# fill safe fields (refused until account status is login_verified_manually):
+npm run draft:workday -- --job barclays_research_2027_sg --headed --fill-safe-fields
+
+# + confirmed yes/no questions (work auth, sponsorship, prior Barclays):
+npm run draft:workday -- --job barclays_research_2027_sg --headed --fill-safe-fields --fill-confirmed-fields
+
+# + CV upload (refused until `npm run documents:readiness` is clean):
+npm run draft:workday -- --job barclays_research_2027_sg --headed --fill-safe-fields --fill-confirmed-fields --allow-cv-upload
+
+# fully offline dry run against the Workday fixture pages:
+npm run draft:workday -- --provider fixture --job barclays_research_2027_sg \
+  --profile tests/fixtures/candidate_profile.fixture.yaml --answers tests/fixtures/answer_bank.fixture.yaml \
+  --accounts tests/fixtures/account_status.fixture.yaml --manifest tests/fixtures/document_manifest.clean.fixture.yaml \
+  --fill-safe-fields
+```
+
+### What the bot will NEVER do
+
+No final submit, no "Submit Application", no certification/declaration
+checkboxes, no electronic signatures, no terms acceptance, no passwords or
+OTPs, no captchas, no salary or National Service answers, no background
+check / regulatory / conflict-of-interest declarations, no guessing on
+unmapped fields, no force-clicks or synthetic submit events, no non-Workday
+platform. Enforced three ways: preflight gates, page guards re-checked
+before every action, and a static safety test that confines `.fill/.check/
+.selectOption` to `WorkdayFieldFiller.ts` and `setInputFiles` to
+`WorkdayResumeUpload.ts`.
+
+### Draft runs
+
+Output goes to `draft-runs/<timestamp>Z-draft/` (gitignored): run-level
+`summary.json` / `summary.redacted.json` and `action-log.jsonl`, plus per-job
+`draft-plan.json` / `.redacted.json` / `.md`, `scanned-fields.json`,
+`planned-actions.json`, `blocked-actions.json`, `manual-review-items.json`,
+and `screenshots/` (01-start, 02-after-fill, 03-stop). **Review
+`draft-plan.md` before going any further** — it lists exactly what was
+filled, skipped, blocked, or needs you. Redacted files carry no emails,
+phone numbers, addresses, DOB, or credentials; full files stay local for
+your review only.
 
 ## Phase 5: document readiness gate & human-in-the-loop account setup
 

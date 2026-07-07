@@ -1,0 +1,22 @@
+# Test fixture — DUMMY data only, no real PII. The Barclays account is
+# login_verified_manually so fixture draft runs can exercise the fill gates.
+accounts:
+  barclays_workday:
+    company: Barclays
+    portal: workday
+    email: "alex.tan@example.edu"
+    entry_url: "https://search.jobs.barclays/job/fixture"
+    status: login_verified_manually
+    last_verified: "2026-07-01"
+    history:
+      - at: "2026-07-01"
+        from: created
+        to: login_verified_manually
+        note: "fixture: human logged in and verified the session"
+
+  gic_impress_ai:
+    company: GIC
+    portal: impress_ai
+    email: "alex.tan@example.edu"
+    status: unknown
+    history: []

@@ -1,0 +1,45 @@
+# Test fixture — DUMMY data only. A manifest in the fully CORRECTED state:
+# matching email, resolved end dates, corrections declared, files present
+# (tiny dummy PDFs committed under tests/fixtures/documents/).
+expected_application_email: "alex.tan@example.edu"
+national_service_status: "resolved"
+
+required_cv_keys:
+  - omers_public_equities
+  - temasek_private_markets
+
+expected_private_markets_stats:
+  live_investment_deals: 2
+  direct_investments: 1
+  fund_investments: 1
+  series_h_investment_usd_millions: 100
+  series_h_round_size_usd_billions: 1
+  series_h_company_descriptor: "example technology company"
+
+documents:
+  - key: omers_public_equities
+    kind: cv
+    human_label: "Public equities CV (fixture)"
+    path: tests/fixtures/documents/Example_CV_Public_Equities.pdf
+    cv_bucket: public_equities_markets_research
+    email_shown: "alex.tan@example.edu"
+    experiences_shown:
+      - experience_id: temasek_innovation
+        end_date_shown: "2026-07"
+
+  - key: temasek_private_markets
+    kind: cv
+    human_label: "Private markets CV (fixture)"
+    path: tests/fixtures/documents/Example_CV_Private_Markets.pdf
+    cv_bucket: private_markets_ibd_deals
+    email_shown: "alex.tan@example.edu"
+    experiences_shown:
+      - experience_id: temasek_innovation
+        end_date_shown: "2026-07"
+    private_markets_stats_shown:
+      live_investment_deals: 2
+      direct_investments: 1
+      fund_investments: 1
+      series_h_investment_usd_millions: 100
+      series_h_round_size_usd_billions: 1
+      series_h_company_descriptor: "example technology company"

@@ -57,7 +57,7 @@ export function recordAccountTransition(
       ? { entry_url: existing?.entry_url ?? input.entryUrl! }
       : {}),
     status: input.to,
-    ...(input.to === 'login_verified' || input.to === 'created'
+    ...(input.to === 'login_verified' || input.to === 'login_verified_manually' || input.to === 'created'
       ? { last_verified: input.at }
       : existing?.last_verified !== undefined
         ? { last_verified: existing.last_verified }

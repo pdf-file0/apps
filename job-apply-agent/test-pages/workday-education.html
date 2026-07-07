@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Education - Workday</title></head>
+<body>
+<div data-automation-id="educationPage">
+  <h2>Education</h2>
+
+  <div class="field">
+    <label for="institution">School or University *</label>
+    <input type="text" id="institution" name="institution" data-automation-id="educationSection_school" required />
+  </div>
+  <div class="field">
+    <label for="degree">Degree *</label>
+    <select id="degree" name="degree" data-automation-id="educationSection_degree" required>
+      <option>Select One</option>
+      <option>Bachelor's in Business Management</option>
+      <option>Bachelor of Science</option>
+      <option>Master of Science</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="major">Major / Field of Study</label>
+    <input type="text" id="major" name="major" data-automation-id="educationSection_fieldOfStudy" />
+  </div>
+  <div class="field">
+    <label for="gradDate">Expected Graduation Date</label>
+    <input type="text" id="gradDate" name="gradDate" data-automation-id="educationSection_graduationDate" placeholder="Month Year" />
+  </div>
+  <div class="field">
+    <label for="gpa">GPA</label>
+    <input type="text" id="gpa" name="gpa" data-automation-id="educationSection_gpa" aria-describedby="gpa-help" />
+    <div id="gpa-help">Optional. Enter your cumulative grade point average.</div>
+  </div>
+
+  <button type="button" data-automation-id="bottom-navigation-next-button">Save and Continue</button>
+</div>
+</body>
+</html>

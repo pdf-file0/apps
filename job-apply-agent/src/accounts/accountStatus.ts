@@ -35,6 +35,9 @@ export const AccountStatusValueSchema = z.enum([
   'created_pending_verification',
   'created',
   'login_verified',
+  // Set by the HUMAN after they have logged in themselves and confirmed the
+  // session works. Phase 6 refuses any live fill or CV upload without it.
+  'login_verified_manually',
   'unknown',
 ])
 

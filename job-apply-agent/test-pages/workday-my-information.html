@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>My Information - Workday</title></head>
+<body>
+<div data-automation-id="myInformationPage">
+  <h2>My Information</h2>
+  <p>Fields marked with * are required.</p>
+
+  <div class="field">
+    <label for="firstName">First Name *</label>
+    <input type="text" id="firstName" name="firstName" data-automation-id="legalNameSection_firstName" required />
+  </div>
+  <div class="field">
+    <label for="lastName">Last Name *</label>
+    <input type="text" id="lastName" name="lastName" data-automation-id="legalNameSection_lastName" required />
+  </div>
+  <div class="field">
+    <label for="email">Email Address *</label>
+    <input type="email" id="email" name="email" data-automation-id="contactInformation_email" required aria-describedby="email-help" />
+    <div id="email-help">We will use this address for application updates.</div>
+  </div>
+  <div class="field">
+    <label for="phone">Phone Number *</label>
+    <input type="tel" id="phone" name="phone" data-automation-id="contactInformation_phone" required />
+  </div>
+  <div class="field">
+    <label for="phoneType">Phone Device Type</label>
+    <select id="phoneType" name="phoneType" data-automation-id="contactInformation_phoneType">
+      <option>Select One</option>
+      <option>Mobile</option>
+      <option>Home</option>
+      <option>Work</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="addressLine1">Address Line 1 *</label>
+    <input type="text" id="addressLine1" name="addressLine1" data-automation-id="addressSection_addressLine1" required />
+  </div>
+  <div class="field">
+    <label for="postalCode">Postal Code *</label>
+    <input type="text" id="postalCode" name="postalCode" data-automation-id="addressSection_postalCode" required />
+  </div>
+  <div class="field">
+    <label for="country">Country *</label>
+    <select id="country" name="country" data-automation-id="addressSection_country" required>
+      <option>Select One</option>
+      <option>Australia</option>
+      <option>Singapore</option>
+      <option>United Kingdom</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="linkedin">LinkedIn Profile</label>
+    <input type="url" id="linkedin" name="linkedin" data-automation-id="socialSection_linkedin" />
+  </div>
+  <div class="field">
+    <label for="source">How did you hear about us?</label>
+    <select id="source" name="source" data-automation-id="sourceSection_source">
+      <option>Select One</option>
+      <option>University event</option>
+      <option>Company website</option>
+      <option>Referral</option>
+    </select>
+  </div>
+
+  <button type="button" data-automation-id="bottom-navigation-next-button">Save and Continue</button>
+</div>
+</body>
+</html>

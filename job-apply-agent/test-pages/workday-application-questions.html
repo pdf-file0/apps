@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Application Questions - Workday</title></head>
+<body>
+<div data-automation-id="questionnairePage">
+  <h2>Application Questions</h2>
+
+  <fieldset>
+    <legend>Are you legally authorized to work in Singapore? *</legend>
+    <input type="radio" id="workauth_yes" name="workAuth" value="Yes" required />
+    <label for="workauth_yes">Yes</label>
+    <input type="radio" id="workauth_no" name="workAuth" value="No" />
+    <label for="workauth_no">No</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Will you now or in the future require visa sponsorship? *</legend>
+    <input type="radio" id="sponsor_yes" name="sponsorship" value="Yes" required />
+    <label for="sponsor_yes">Yes</label>
+    <input type="radio" id="sponsor_no" name="sponsorship" value="No" />
+    <label for="sponsor_no">No</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Have you previously applied to Barclays? *</legend>
+    <input type="radio" id="applied_yes" name="previouslyApplied" value="Yes" required />
+    <label for="applied_yes">Yes</label>
+    <input type="radio" id="applied_no" name="previouslyApplied" value="No" />
+    <label for="applied_no">No</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Do you have any relatives employed at Barclays?</legend>
+    <input type="radio" id="relatives_yes" name="relativesEmployed" value="Yes" />
+    <label for="relatives_yes">Yes</label>
+    <input type="radio" id="relatives_no" name="relativesEmployed" value="No" />
+    <label for="relatives_no">No</label>
+  </fieldset>
+
+  <div class="field">
+    <label for="nsStatus">What is your National Service status?</label>
+    <select id="nsStatus" name="nsStatus" data-automation-id="questionSection_nationalService">
+      <option>Select One</option>
+      <option>Completed full-time National Service</option>
+      <option>Currently serving</option>
+      <option>Exempted</option>
+      <option>Not applicable</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="salary">Salary Expectations (SGD)</label>
+    <input type="text" id="salary" name="salary" data-automation-id="questionSection_salary" />
+  </div>
+
+  <div class="field">
+    <label for="whyBarclays">Why do you want to work at Barclays?</label>
+    <textarea id="whyBarclays" name="whyBarclays" data-automation-id="questionSection_whyCompany"></textarea>
+  </div>
+
+  <div class="field">
+    <label for="gender">Gender</label>
+    <select id="gender" name="gender" data-automation-id="demographicSection_gender" aria-describedby="gender-help">
+      <option>Select One</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Prefer not to say</option>
+    </select>
+    <div id="gender-help">Used for diversity monitoring only.</div>
+  </div>
+
+  <button type="button" data-automation-id="bottom-navigation-next-button">Save and Continue</button>
+</div>
+</body>
+</html>

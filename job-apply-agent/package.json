@@ -22,7 +22,8 @@
     "accounts:list": "tsx src/account-cli.ts list",
     "accounts:plan": "tsx src/account-cli.ts plan",
     "accounts:setup": "tsx src/account-cli.ts setup",
-    "accounts:record": "tsx src/account-cli.ts record"
+    "accounts:record": "tsx src/account-cli.ts record",
+    "draft:workday": "tsx src/draft-cli.ts"
   },
   "dependencies": {
     "playwright-core": "^1.49.1",
