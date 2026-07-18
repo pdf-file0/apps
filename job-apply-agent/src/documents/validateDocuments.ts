@@ -50,6 +50,7 @@ function comparePrivateStats(
     'series_h_round_size_usd_billions',
   ] as const
   for (const field of numericFields) {
+    if (shown[field] === undefined) continue // not printed on the CV — not required
     if (shown[field] !== expected[field]) {
       mismatches.push(`${field}: CV shows ${shown[field]}, expected ${expected[field]}`)
     }
@@ -117,7 +118,7 @@ export function validateDocuments(input: ValidateDocumentsInput): DocumentValida
   // --- Per-document checks ---------------------------------------------------
   for (const doc of manifest.documents) {
     const checks: DocumentCheckLine[] = []
-    checkFile(doc, fileExists, blockers, checks)
+    checkFile(doc, fileExists, blockers, manualReviewItems, checks)
     if (doc.kind === 'cv') {
       checkEmail(doc, expectedEmail, blockers, checks)
       checkExperiencesShown(doc, profile, resolvedTemasekEnd, blockers, warnings, checks)
@@ -188,6 +189,7 @@ function checkFile(
   doc: DocumentEntry,
   fileExists: (path: string) => boolean,
   blockers: DocumentBlocker[],
+  manualReviewItems: DocumentBlocker[],
   checks: DocumentCheckLine[],
 ): void {
   const exists = fileExists(doc.path)
@@ -197,14 +199,27 @@ function checkFile(
     detail: exists ? doc.path : `not found: ${doc.path}`,
   })
   if (!exists) {
-    blockers.push({
-      id: `document_file_missing:${doc.key}`,
-      code: 'document_file_missing',
-      severity: 'blocks_cv_upload',
-      documentKey: doc.key,
-      message: `Document "${doc.key}" not found at ${doc.path}.`,
-      resolution: 'Place the file at the declared path (documents/ is gitignored) or fix the manifest path.',
-    })
+    // Only a CV missing its file blocks CV upload. Other kinds (transcript,
+    // cover letter, ...) are attached only when a portal requires them.
+    if (doc.kind === 'cv') {
+      blockers.push({
+        id: `document_file_missing:${doc.key}`,
+        code: 'document_file_missing',
+        severity: 'blocks_cv_upload',
+        documentKey: doc.key,
+        message: `Document "${doc.key}" not found at ${doc.path}.`,
+        resolution: 'Place the file at the declared path (documents/ is gitignored) or fix the manifest path.',
+      })
+    } else {
+      manualReviewItems.push({
+        id: `document_file_missing:${doc.key}`,
+        code: 'document_file_missing',
+        severity: 'manual_review_if_asked',
+        documentKey: doc.key,
+        message: `Document "${doc.key}" (${doc.kind}) not found at ${doc.path} — only needed if a portal requires it.`,
+        resolution: 'Place the file at the declared path when a portal actually asks for it.',
+      })
+    }
   }
 }
 

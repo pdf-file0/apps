@@ -30,7 +30,7 @@ export const PrivateMarketsStatsSchema = z
     live_investment_deals: z.number().int().nonnegative(),
     direct_investments: z.number().int().nonnegative(),
     fund_investments: z.number().int().nonnegative(),
-    series_h_investment_usd_millions: z.number().positive(),
+    series_h_investment_usd_millions: z.number().positive().optional(),
     series_h_round_size_usd_billions: z.number().positive(),
     series_h_company_descriptor: z.string().min(1),
   })

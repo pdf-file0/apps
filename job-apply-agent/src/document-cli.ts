@@ -97,7 +97,8 @@ function main(): void {
   for (const doc of readiness.perDocument) {
     logger.info(`${doc.key} (${doc.kind}) — ${doc.path}`)
     for (const check of doc.checks) {
-      logger.info(`  ${check.ok ? 'ok ' : 'BLOCK'} ${check.check}: ${mask(check.detail)}`)
+      const label = check.ok ? 'ok ' : doc.kind === 'cv' ? 'BLOCK' : 'warn '
+      logger.info(`  ${label} ${check.check}: ${mask(check.detail)}`)
     }
   }
 
