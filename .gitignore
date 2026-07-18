@@ -6,3 +6,5 @@ firecrawl/
 # Local isolated Codex worktrees and subagent execution ledgers
 .worktrees/
 job-apply-agent/.superpowers/
+.firecrawl/
+.DS_Store

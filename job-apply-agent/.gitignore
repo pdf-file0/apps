@@ -16,6 +16,8 @@ runs/*
 # PII — local only, never committed. Committed counterparts are the
 # *.example.yaml files and test fixtures with dummy data.
 profiles/*.local.yaml
+profiles/*.local.html
+samples/*.local.html
 packets/
 flows/
 
@@ -31,3 +33,7 @@ account-runs/
 # Never commit real candidate documents
 documents/*
 !documents/.gitkeep
+
+# Scratch workspace for real candidate materials (cover letter drafts,
+# transcript/CV scans) — local only, never committed.
+tmp/

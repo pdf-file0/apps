@@ -21,6 +21,24 @@ export const DateOfBirthSchema = z
   })
   .strict()
 
+export const LanguageProvenanceSchema = z
+  .object({
+    source: z.string().min(1),
+    confirmed_at: z.string().min(1),
+  })
+  .strict()
+
+export const LanguageEntrySchema = z
+  .object({
+    name: z.string().min(1),
+    native: z.boolean(),
+    fluent: z.boolean(),
+    reads: z.boolean().nullable(),
+    writes: z.boolean(),
+    provenance: LanguageProvenanceSchema,
+  })
+  .strict()
+
 export const CandidateIdentitySchema = z
   .object({
     legal_name: z.string().min(1),
@@ -32,6 +50,7 @@ export const CandidateIdentitySchema = z
     nationality: z.string().min(1),
     citizenship: z.string().min(1),
     date_of_birth: DateOfBirthSchema,
+    languages: z.array(LanguageEntrySchema).optional(),
   })
   .strict()
 

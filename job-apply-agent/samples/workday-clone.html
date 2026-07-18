@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sample Application — Workday Clone</title>
+<style>
+  :root { --blue: #0875e1; --bg: #f7f8fa; --border: #d7dbe0; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg); margin: 0; color: #1a1a1a; }
+  header { background: #002e5f; color: #fff; padding: 1rem 2rem; }
+  header h1 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+  header p { margin: 0.2rem 0 0; font-size: 0.85rem; opacity: 0.8; }
+  nav { display: flex; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; }
+  nav button { flex: none; padding: 0.9rem 1.2rem; border: none; background: none; font-size: 0.85rem; cursor: pointer; color: #555; border-bottom: 3px solid transparent; white-space: nowrap; }
+  nav button.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+  main { max-width: 720px; margin: 2rem auto; background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 2rem; }
+  section { display: none; }
+  section.active { display: block; }
+  h2 { margin-top: 0; font-size: 1.2rem; }
+  .hint { color: #666; font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 1.5rem; }
+  .field { margin-bottom: 1.1rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+  input[type=text], input[type=email], input[type=tel], input[type=url], input[type=file], select, textarea {
+    width: 100%; padding: 0.55rem 0.6rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.9rem;
+  }
+  textarea { min-height: 5rem; resize: vertical; }
+  fieldset { border: none; padding: 0; margin: 0 0 1.1rem; }
+  legend { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; padding: 0; }
+  fieldset label { display: inline; font-weight: 400; margin-right: 1.2rem; }
+  fieldset input { width: auto; margin-right: 0.3rem; }
+  .help { color: #777; font-size: 0.78rem; margin-top: 0.25rem; }
+  .row-actions { display: flex; justify-content: space-between; margin-top: 1.8rem; border-top: 1px solid var(--border); padding-top: 1.2rem; }
+  button.next, button.submit { background: var(--blue); color: #fff; border: none; padding: 0.6rem 1.4rem; border-radius: 4px; font-size: 0.9rem; cursor: pointer; }
+  button.back { background: none; border: 1px solid var(--border); padding: 0.6rem 1.4rem; border-radius: 4px; font-size: 0.9rem; cursor: pointer; }
+  button.submit { background: #999; cursor: not-allowed; }
+  .certify { display: flex; align-items: flex-start; gap: 0.5rem; margin: 1rem 0; }
+  .certify input { width: auto; margin-top: 0.2rem; }
+  .notice { background: #fff3cd; border: 1px solid #ffe08a; padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.82rem; margin: 1rem 2rem 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sample Application — Workday Clone</h1>
+  <p>Research Analyst Summer Internship Programme 2027 · Singapore</p>
+</header>
+
+<div class="notice">Local sample only — not a real Workday site. Field names/IDs mirror the real automation fixtures in <code>test-pages/</code>. Submit is disabled on purpose (this repo never auto-submits).</div>
+
+<nav id="tabs"></nav>
+
+<main>
+
+<section data-step="0" class="active">
+  <h2>My Information</h2>
+  <p class="hint">Fields marked * are required.</p>
+
+  <div class="field"><label for="firstName">First Name *</label><input type="text" id="firstName" name="firstName" data-automation-id="legalNameSection_firstName" required></div>
+  <div class="field"><label for="lastName">Last Name *</label><input type="text" id="lastName" name="lastName" data-automation-id="legalNameSection_lastName" required></div>
+  <div class="field"><label for="email">Email Address *</label><input type="email" id="email" name="email" data-automation-id="contactInformation_email" required><div class="help">We will use this address for application updates.</div></div>
+  <div class="field"><label for="phone">Phone Number *</label><input type="tel" id="phone" name="phone" data-automation-id="contactInformation_phone" required></div>
+  <div class="field"><label for="phoneType">Phone Device Type</label>
+    <select id="phoneType" name="phoneType" data-automation-id="contactInformation_phoneType">
+      <option>Select One</option><option>Mobile</option><option>Home</option><option>Work</option>
+    </select>
+  </div>
+  <div class="field"><label for="addressLine1">Address Line 1 *</label><input type="text" id="addressLine1" name="addressLine1" data-automation-id="addressSection_addressLine1" required></div>
+  <div class="field"><label for="postalCode">Postal Code *</label><input type="text" id="postalCode" name="postalCode" data-automation-id="addressSection_postalCode" required></div>
+  <div class="field"><label for="country">Country *</label>
+    <select id="country" name="country" data-automation-id="addressSection_country" required>
+      <option>Select One</option><option>Australia</option><option>Singapore</option><option>United Kingdom</option>
+    </select>
+  </div>
+  <div class="field"><label for="linkedin">LinkedIn Profile</label><input type="url" id="linkedin" name="linkedin" data-automation-id="socialSection_linkedin"></div>
+  <div class="field"><label for="source">How did you hear about us?</label>
+    <select id="source" name="source" data-automation-id="sourceSection_source">
+      <option>Select One</option><option>University event</option><option>Company website</option><option>Referral</option>
+    </select>
+  </div>
+</section>
+
+<section data-step="1">
+  <h2>Education</h2>
+  <div class="field"><label for="institution">School or University *</label><input type="text" id="institution" name="institution" data-automation-id="educationSection_school" required></div>
+  <div class="field"><label for="degree">Degree *</label>
+    <select id="degree" name="degree" data-automation-id="educationSection_degree" required>
+      <option>Select One</option><option>Bachelor's in Business Management</option><option>Bachelor of Science</option><option>Master of Science</option>
+    </select>
+  </div>
+  <div class="field"><label for="major">Major / Field of Study</label><input type="text" id="major" name="major" data-automation-id="educationSection_fieldOfStudy"></div>
+  <div class="field"><label for="gradDate">Expected Graduation Date</label><input type="text" id="gradDate" name="gradDate" data-automation-id="educationSection_graduationDate" placeholder="Month Year"></div>
+  <div class="field"><label for="gpa">GPA</label><input type="text" id="gpa" name="gpa" data-automation-id="educationSection_gpa"><div class="help">Optional. Cumulative grade point average.</div></div>
+</section>
+
+<section data-step="2">
+  <h2>Work Experience</h2>
+  <div class="field"><label for="jobTitle">Job Title</label><input type="text" id="jobTitle" name="jobTitle" data-automation-id="experienceSection_jobTitle"></div>
+  <div class="field"><label for="companyName">Company</label><input type="text" id="companyName" name="companyName" data-automation-id="experienceSection_company"></div>
+  <div class="field"><label for="workLocation">Location</label><input type="text" id="workLocation" name="workLocation" data-automation-id="experienceSection_location"></div>
+  <div class="field"><label for="fromDate">From Date</label><input type="text" id="fromDate" name="fromDate" data-automation-id="experienceSection_fromDate" placeholder="MM/YYYY"></div>
+  <div class="field"><label for="toDate">To Date</label><input type="text" id="toDate" name="toDate" data-automation-id="experienceSection_toDate" placeholder="MM/YYYY"></div>
+  <div class="field"><label for="roleSummary">Role Summary</label><textarea id="roleSummary" name="roleSummary" data-automation-id="experienceSection_roleDescription"></textarea></div>
+</section>
+
+<section data-step="3">
+  <h2>Application Questions</h2>
+
+  <fieldset>
+    <legend>Are you legally authorized to work in Singapore? *</legend>
+    <label><input type="radio" name="workAuth" value="Yes" required> Yes</label>
+    <label><input type="radio" name="workAuth" value="No"> No</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Will you now or in the future require visa sponsorship? *</legend>
+    <label><input type="radio" name="sponsorship" value="Yes" required> Yes</label>
+    <label><input type="radio" name="sponsorship" value="No"> No</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Have you previously applied to Barclays? *</legend>
+    <label><input type="radio" name="previouslyApplied" value="Yes" required> Yes</label>
+    <label><input type="radio" name="previouslyApplied" value="No"> No</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Do you have any relatives employed at Barclays?</legend>
+    <label><input type="radio" name="relativesEmployed" value="Yes"> Yes</label>
+    <label><input type="radio" name="relativesEmployed" value="No"> No</label>
+  </fieldset>
+
+  <div class="field"><label for="nsStatus">What is your National Service status?</label>
+    <select id="nsStatus" name="nsStatus" data-automation-id="questionSection_nationalService">
+      <option>Select One</option><option>Completed full-time National Service</option><option>Currently serving</option><option>Exempted</option><option>Not applicable</option>
+    </select>
+  </div>
+
+  <div class="field"><label for="salary">Salary Expectations (SGD)</label><input type="text" id="salary" name="salary" data-automation-id="questionSection_salary"></div>
+  <div class="field"><label for="whyBarclays">Why do you want to work at Barclays?</label><textarea id="whyBarclays" name="whyBarclays" data-automation-id="questionSection_whyCompany"></textarea></div>
+  <div class="field"><label for="gender">Gender</label>
+    <select id="gender" name="gender" data-automation-id="demographicSection_gender">
+      <option>Select One</option><option>Male</option><option>Female</option><option>Prefer not to say</option>
+    </select>
+    <div class="help">Used for diversity monitoring only.</div>
+  </div>
+</section>
+
+<section data-step="4">
+  <h2>Resume</h2>
+  <p class="hint">Upload your resume, or use Autofill with Resume to pre-populate your application.</p>
+  <div class="field"><label for="resumeFile">Upload Resume *</label><input type="file" id="resumeFile" name="resumeFile" data-automation-id="resumeSection_fileUpload" required><div class="help">PDF or DOCX, up to 5MB.</div></div>
+</section>
+
+<section data-step="5">
+  <h2>Review</h2>
+  <p class="hint">Review your application before you submit. Once submitted, changes are no longer possible.</p>
+  <div class="certify">
+    <input type="checkbox" id="certifyBox" name="certify">
+    <label for="certifyBox">I certify that the information provided is true and complete.</label>
+  </div>
+</section>
+
+<div class="row-actions">
+  <button class="back" id="backBtn">Back</button>
+  <button class="next" id="nextBtn">Save and Continue</button>
+  <button class="submit" id="submitBtn" style="display:none" disabled title="Disabled in this sample — this repo never auto-submits">Submit</button>
+</div>
+
+</main>
+
+<script>
+const steps = ['My Information', 'Education', 'Experience', 'Application Questions', 'Resume', 'Review'];
+const sections = document.querySelectorAll('section');
+const tabs = document.getElementById('tabs');
+let current = 0;
+
+steps.forEach((label, i) => {
+  const b = document.createElement('button');
+  b.textContent = (i + 1) + '. ' + label;
+  b.onclick = () => goTo(i);
+  tabs.appendChild(b);
+});
+
+function goTo(i) {
+  current = Math.max(0, Math.min(steps.length - 1, i));
+  sections.forEach((s) => s.classList.toggle('active', Number(s.dataset.step) === current));
+  [...tabs.children].forEach((b, idx) => b.classList.toggle('active', idx === current));
+  document.getElementById('backBtn').style.visibility = current === 0 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').style.display = current === steps.length - 1 ? 'none' : 'inline-block';
+  document.getElementById('submitBtn').style.display = current === steps.length - 1 ? 'inline-block' : 'none';
+}
+
+document.getElementById('nextBtn').onclick = () => goTo(current + 1);
+document.getElementById('backBtn').onclick = () => goTo(current - 1);
+document.getElementById('submitBtn').onclick = () => alert('Submit is disabled in this sample clone.');
+
+goTo(0);
+</script>
+
+</body>
+</html>
